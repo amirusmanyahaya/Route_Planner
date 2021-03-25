@@ -4,12 +4,13 @@
 #include <vector>
 #include <string>
 #include <io2d.h>
+#include <limits>
 #include "route_model.h"
 #include "render.h"
 #include "route_planner.h"
 
 using namespace std::experimental;
-
+using std::numeric_limits;
 static std::optional<std::vector<std::byte>> ReadFile(const std::string &path)
 {   
     std::ifstream is{path, std::ios::binary | std::ios::ate};
@@ -25,6 +26,26 @@ static std::optional<std::vector<std::byte>> ReadFile(const std::string &path)
     if( contents.empty() )
         return std::nullopt;
     return std::move(contents);
+}
+
+bool isValid(int& sx, int& sy, int& ex, int& ey){
+	return sx <= 100 && sy <= 100 && ex <= 100 && ey <= 100;
+}
+
+int getInput(std::string s){
+  	float n{};
+  	std::cout << "Enter the value for " << s << "\n"; 
+  	while(true){
+    	std::cin >> n;
+      	if(std::cin.fail()){
+        	std::cin.clear();
+          	std::cin.ignore(numeric_limits<std::streamsize>::max(),"\n");
+          	std::cout << "Enter a valid value for " << s << "\n";
+        }else{
+        	break;
+        }
+    }
+ 	return n;
 }
 
 int main(int argc, const char **argv)
@@ -52,27 +73,24 @@ int main(int argc, const char **argv)
             osm_data = std::move(*data);
     }
     
-    // TODO 1: Declare floats `start_x`, `start_y`, `end_x`, and `end_y` and get
-    // user input for these values using std::cin. Pass the user input to the
-    // RoutePlanner object below in place of 10, 10, 90, 90.
   	float start_x {};
   	float start_y {};
   	float end_x {};
   	float end_y {};
+  
   	// input validation
-    while(true){
-        std::cout << "Enter start_x start_y end_x end_y" << std::endl;
-        std::cin >> start_x >> start_y >> end_x >> end_y;
-        if(std::cin.fail()){
-            std::cin.clear();
-            std::cin.ignore();
-            std::cout << "Enter a valid start_x start_y end_x end_y" << std::endl;
-            std::cin >> start_x >> start_y >> end_x >> end_y;
-        }else{
-            break;
-        }
-
+	start_x = getInput("start_x");
+  	start_y = getInput("start_y");
+  	end_x = getInput("end_x");
+  	end_y = getInput("end_y");
+  	while(!isvalid(start_x,start_y,end_x,end_y)){
+    	std::cout << "Please enter a number ranging from 0 to 100";
+        start_x = getInput("start_x");
+        start_y = getInput("start_y");
+        end_x = getInput("end_x");
+        end_y = getInput("end_y");
     }
+  	
   	
 
     // Build Model.
